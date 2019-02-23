@@ -1,0 +1,13 @@
+= About
+:encoding: utf-8
+:lang: en
+:toc: left
+:numbered: 2
+
+== About
+My Pages site use the layout and styles from the Jekyll theme which selected in project settings. The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+
+== Thanks
+
+**Thank all the guys for your contribution directly and indirect**
+

@@ -1,0 +1,17 @@
+language: ruby
+
+rvm: 2.5.1
+
+before_install: gem install bundler
+
+script: bundle exec jekyll build
+
+deploy:
+  provider: pages
+  github-token: $GITHUB_TOKEN
+  local-dir: _site
+  target-branch: gh-pages
+  skip-cleanup: true
+  keep-history: true
+  on:
+    branch: master
