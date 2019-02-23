@@ -386,14 +386,6 @@ pre {
 .txt-center {
   text-align: center; }
 
-#toc {
-  margin-right: 1em;
-  background-color: #eff2f3;
-  width: 20em;
-  position: fixed;
-  padding-left: 1em;
-  margin-left: 38em; }
-
 /*=====================================
 =            Layout Styles            =
 =====================================*/
