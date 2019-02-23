@@ -1,13 +1,10 @@
 = Author
 :encoding: utf-8
 :lang: en
-:toc: left
-:numbered: 2
-
 
 == Author
 
-`Ikki` is the nickname I used when I worked at ebay & citigroup
+`Ikki` is the nickname I used when I worked at *ebay* & *citigroup*
 
 I'm a post-90s
 
