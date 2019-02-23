@@ -21,14 +21,14 @@ description: >- # this means to ignore newlines until "baseurl:"
    
 baseurl: "/blogs" # the subpath of your site, e.g. /blog
 url: "https://ikki-dai.github.io/" # the base hostname & protocol for your site, e.g. http://example.com
-repo: https://github.com/Ikki-Dai/ikki-dai.github.io
+repo: https://github.com/Ikki-Dai/
 disqus_shortname: "ikki-dai"
 
 author:
   name: Ikki Dai
   image: /assets/images/author.jpg
   email: ikkiday@163.com
-  url: https://ikki-dai.github.io/
+  url: https://ikki-dai.github.io/blogs
   github: https://github.com/Ikki-Dai
 
 github_username:  ikki-dai
