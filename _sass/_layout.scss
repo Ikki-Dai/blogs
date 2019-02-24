@@ -220,6 +220,7 @@ $sliding-panel-background-focus: lighten($sliding-panel-background, 5%);
   z-index: 999999;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  opacity: 0.7;
 
   ul {
     list-style: none;
