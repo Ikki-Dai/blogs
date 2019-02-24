@@ -549,7 +549,8 @@ pre {
   background: #0d0d0d;
   z-index: 999999;
   overflow-y: auto;
-  -webkit-overflow-scrolling: touch; }
+  -webkit-overflow-scrolling: touch;
+  opacity: 0.7; }
   .sliding-panel-content ul {
     list-style: none;
     padding: 0;
