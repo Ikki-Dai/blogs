@@ -1,15 +1,9 @@
 ---
 layout: default
-bodyclass: single
 ---
 
-<article class="post">
-
-  <div class="post-content container">
-    {{ content }}
-
-  </div>
-
-  {% include comments.html %}
-
+<article>
+  <h2>{{ page.title }}</h2>
+  <time datetime="{{ page.date | date_to_xmlschema }}" class="by-line">{{ page.date | date_to_string }}</time>
+  {{ content }}
 </article>

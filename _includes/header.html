@@ -1,36 +1,11 @@
-<header class="site-header">
-
-  <div class="container txt-center">
-    <a href="#" class="nav-toogle js-menu-trigger sliding-panel-button">
-      <span></span>
-      <span></span>
-      <span></span>
+<header>
+  <div>
+    <a href="{{ "/" | prepend: site.baseurl | replace: '//', '/' }}">
+    {% assign owner_first_name = site.owner | split: " " %}
+    <h1>{{ owner_first_name[0] | downcase }}@github.io:~$</h1>
     </a>
-
-    <nav class="js-menu sliding-panel-content">
-      <ul>
-        <li><a href="{{ "/" | prepend: site.baseurl }}">home</a></li>
-        <li><a href="{{ "/about" | prepend: site.baseurl }}">about</a></li>
-        <li><a href="{{ site.author.url }}/author" target="_blank">the author</a></li>
-        <li><a href="{{ site.repo }}" target="_blank">Download</a></li>
-      </ul>
-    </nav>
-    <div class="js-menu-screen sliding-panel-fade-screen"></div>
-
-    <a href="{{ "/" | prepend: site.baseurl }}" class="author-thumb dot">
-      <img src="{{ "/images/author.jpg" | prepend: site.baseurl }}" alt="Author thumbnail" class="dot">
-    </a>
-
-    {% if page.id %}
-      <h1 class="post-title">{{ page.title }}</h1>
-      <p class="post-meta">{{ page.date | date: "%b %-d, %Y" }}{% if page.author %} • {{ page.author }}{% endif %}{% if page.meta %} • {{ page.meta }}{% endif %}</p>
-    {% elsif page.bodyclass == 'page' %}
-      <h1 class="post-title">{{ page.title }}</h1>
-    {% else %}
-      <h1>Hi, I'm {{ site.name }}</h1>
-      {% include search.html %}
-    {% endif %}
-
+    <div class="header-links">
+      {% include links.html %}
+    </div>
   </div>
-
 </header>

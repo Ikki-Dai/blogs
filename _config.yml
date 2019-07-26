@@ -1,62 +1,32 @@
-# Welcome to Jekyll!
-#
-# This config file is meant for settings that affect your whole blog, values
-# which you are expected to set up once and rarely edit after that. If you find
-# yourself editing this file very often, consider using Jekyll's data files
-# feature for the data you need to update frequently.
-#
-# For technical reasons, this file is *NOT* reloaded automatically when you use
-# 'bundle exec jekyll serve'. If you change this file, please restart the server process.
-
-# Site settings
-# These are used to personalize your new site. If you look in the HTML files,
-# you will see them accessed via {{ site.title }}, {{ site.email }}, and so on.
-# You can create any custom variable you would like, and they will be accessible
-# in the templates via {{ site.myvariable }}.
-title: geek's cheat sheet
-name: Ikki
-email: ikkiday@163.com
-description: >- # this means to ignore newlines until "baseurl:"
-  machine is simple, just 1 or 0  
-   
-baseurl: "/blogs" # the subpath of your site, e.g. /blog
-url: "https://ikki-dai.github.io/" # the base hostname & protocol for your site, e.g. http://example.com
-repo: https://github.com/Ikki-Dai/
-disqus_shortname: "ikki-dai"
-
+title: Geek
+description: "Some Notes about Work"
 author:
-  name: Ikki Dai
-  image: /assets/images/author.jpg
-  email: ikkiday@163.com
-  url: https://ikki-dai.github.io/blogs
-  github: https://github.com/Ikki-Dai
+  name: "Ikki"
+  email: "ikkiday@163.com"
+  url: "https://ikki-dai.github.io/blogs/"
 
-github_username:  ikki-dai
+baseurl: /
 
-# Build settings
-markdown: kramdown
-premalink: /:categories/:year/:title
+source: .
+destination: ./_site
+permalink: /:title
+paginate: 3
+paginate_path: /page/:num/
 
-paginate: 2
-comments: true
-paginate_path: "/page/:num"
-#sass:
-#  sass_dir: _scss
-# theme: minima
-# cover: /assets/images/default-cover.png
+defaults:
+  -
+    scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
 
+future: true
 plugins:
-  - jekyll-asciidoc
+  - jekyll-seo-tag
   - jekyll-paginate
+  - jekyll-sitemap
 
-# Exclude from processing.
-# The following items will not be processed, by default. Create a custom list
-# to override the default setting.
-# exclude:
-#   - Gemfile
-#   - Gemfile.lock
-#   - node_modules
-#   - vendor/bundle/
-#   - vendor/cache/
-#   - vendor/gems/
-#   - vendor/ruby/
+# Custom variables
+owner : "Ikki"
+year : "2019"
