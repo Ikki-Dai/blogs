@@ -64,7 +64,7 @@ spring.shardingsphere.datasource.slave.password=password
 spring.shardingsphere.datasource.slave.pool-name=slave-read
 
 spring.shardingsphere.masterslave.name=ms
-配置读库和写库
+#配置读库和写库
 spring.shardingsphere.masterslave.master-data-source-name=master
 spring.shardingsphere.masterslave.slave-data-source-names=slave
 
