@@ -82,6 +82,8 @@ fc
 - 其中`SleepingWaitStrategy()`默认sleep 时间是 200 纳秒， 根据官方回复：
 在新一些的 linux 内核上, 如果sleep 时间太短，系统可能不会真正的park 一个线程, 所以这个是导致CPU 狂飙的根本原因
 
+- 经过简单验证: 在Linux 内核4.2 的版本上使用 `SleepingWaitStrategy`, CPU使用率200%； 在内核3.10 版本上, CPU使用率 35%
+
 - 修复方案, 在使用SleepWaitStrategy 时，自定义sleep 时间 为 200 微秒
 ```java
 new SleepingWaitStrategy(200, 200_000L);
