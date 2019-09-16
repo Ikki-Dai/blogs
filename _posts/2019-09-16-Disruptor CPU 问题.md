@@ -24,6 +24,7 @@ disruptor = new Disruptor<>(eventFactory, ringBufferSize, (ThreadFactory) thread
 
 ### 排查
 - 使用 ps -mp 查看jvm 进程下线程占用CPU 时间排序，找出线程号
+
 ```shell
 # ps -mp 521 -o THREAD,tid,time | sort -rn | more
 
@@ -32,8 +33,8 @@ PID USER PRI ... TIME+ COMMAND
 254 root  20   1:11.52    java
 252 root  20   1:13.01    java
 255 root  20   1:12.48    java
-
 ```
+
 - 找出对应的线程 16 进制线程号
 
 ```shell
