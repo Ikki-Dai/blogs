@@ -16,13 +16,12 @@
 disruptor = new Disruptor<>(eventFactory, ringBufferSize, (ThreadFactory) threadPoolExecutor, ProducerType.MULTI, new SleepingWaitStrategy())
 ```
 
-## 经过
 
 在开发环境下, 没有发现任何问题 
 
 在部署到测试环境Linux后, CPU 飙升到200% 
 
-### 排查
+## 排查
 - 使用 ps -mp 查看jvm 进程下线程占用CPU 时间排序，找出线程号
 
 ```shell
