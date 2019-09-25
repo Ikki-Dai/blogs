@@ -10,6 +10,7 @@
 ## 坑
 
 - 自定义的TypeHandler 必须不是接口，不是抽象类，有无参构造函数, 不能是匿名类
+
 ```java
 //  mybatis-spring-boot-starter 2.0.1
 if (hasLength(this.typeHandlersPackage)) {
@@ -28,8 +29,8 @@ if (hasLength(this.typeHandlersPackage)) {
         .filter(clazz -> ClassUtils.getConstructorIfAvailable(clazz) != null)
         .forEach(targetConfiguration.getTypeHandlerRegistry()::register);
 }
-    
 ```
+
 - 针对某一个父类下的类型处理时，`@MappedType` 注解里只能使用类，不能使用接口，否则会导致对应的自定义TypeHandler 无法找到
 
 ```java
