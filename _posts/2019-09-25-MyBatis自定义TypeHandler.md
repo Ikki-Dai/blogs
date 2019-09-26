@@ -141,7 +141,7 @@ public class JsonTypeHandler<T> extends BaseTypeHandler {
 
 - TypeHandler 中无法获取 List 泛型，所以只能强制处理String 类型的数组
 
-- List<String> 落库格式：`A,B,C` 方便MySQL `FIND_IN_SET()` 函数使用
+- List<String> 落库格式 `A,B,C` 方便MySQL `FIND_IN_SET()` 函数使用
 
 - List 中 String 元素不能含有 ',' 否则会导致反序列化后元素个数与预期的不一致
 
