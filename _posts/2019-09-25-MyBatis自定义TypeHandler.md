@@ -34,7 +34,7 @@ if (hasLength(this.typeHandlersPackage)) {
 - 针对某一个父类下的类型处理时，`@MappedType` 注解里只能使用类，不能使用接口，否则会导致对应的自定义TypeHandler 无法找到
 - 自定义的TypeHandler 在序列化和放序列化的时候, 用的不是同一种类型搜索方式, 所以, 既要申明父类, 也要申明相关的接口, 防止在代码中使用接口申明类型
 
-#### 入库set时使用的类型匹配方法, 按类搜索, 递归查找父类
+#### 入库set时使用的类型匹配方法, 按类搜索, 递归查找父类的序列化处理类
 
 ```java
 
@@ -52,7 +52,8 @@ if (hasLength(this.typeHandlersPackage)) {
   }
 ```
 
-#### 出库get时使用的类型匹配方法, 按申明的java类型匹配, 所以用接口申明时, 会无法反序列化
+#### 出库get时使用的类型匹配方法, 按申明的java类型匹配, 所以用接口申明字段时, 会无法反序列化
+- 但是如果自定义的TypeHandler 没有明确类型时，会导致无法拿到对应的TypeHandler, 无法处理
 
 ```java
 private <T> TypeHandler<T> getTypeHandler(Type type, JdbcType jdbcType) {
@@ -80,25 +81,77 @@ private <T> TypeHandler<T> getTypeHandler(Type type, JdbcType jdbcType) {
 
 ## 使用Map 处理 Json类型
 
-- 如果需要在业务中解析Json 某个字段的值，使用`JsonNode`更加方便
-
+ 
 ```java
-MappedTypes({AbstractMap.class, Map.class, JsonNode.class})
-public class JsonTypeHandler<T> extends BaseTypeHandler {
+MappedTypes({AbstractMap.class, Map.class})
+public class MapTypeHandler extends BaseTypeHandler<Map> {
 
     private ObjectMapper objectMapper = new ObjectMapper();
-    private Class<T> type;
-    private String typeName;
-    
-    public JsonTypeHandler() { }
 
-    public JsonTypeHandler(Class type) {
-        typeName = type.getTypeName();
-        this.type = type;
+    @Override
+    public void setNonNullParameter(PreparedStatement ps, int i, Map parameter, JdbcType jdbcType) throws SQLException {
+        try {
+            ps.setString(i, objectMapper.writeValueAsString(parameter));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void setNonNullParameter(PreparedStatement ps, int i, Object parameter, JdbcType jdbcType) throws SQLException {
+    public Map getNullableResult(ResultSet rs, String columnName) throws SQLException {
+        String value = rs.getString(columnName);
+        if (null != value) {
+            try {
+                return objectMapper.readValue(value, Map.class);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Map getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
+        String value = rs.getString(columnIndex);
+        if (null != value) {
+            try {
+                return objectMapper.readValue(value, Map.class);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Map getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
+        String value = cs.getString(columnIndex);
+        if (null != value) {
+            try {
+                return objectMapper.readValue(value, Map.class);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+}
+
+```
+
+- 如果需要在业务中解析Json 某个字段的值，使用`JsonNode`更加方便
+
+```java
+
+@MappedTypes({JsonNode.class})
+public class JsonTypeHandler extends BaseTypeHandler<JsonNode> {
+
+    private ObjectMapper objectMapper = new ObjectMapper();
+
+    public JsonTypeHandler() { }
+
+    @Override
+    public void setNonNullParameter(PreparedStatement ps, int i, JsonNode parameter, JdbcType jdbcType) throws SQLException {
         try {
             ps.setString(i, objectMapper.writeValueAsString(parameter));
         } catch (JsonProcessingException e) {
@@ -109,14 +162,9 @@ public class JsonTypeHandler<T> extends BaseTypeHandler {
     @Override
     public Object getNullableResult(ResultSet rs, String columnName) throws SQLException {
         String value = rs.getString(columnName);
-        if(null != value){
+        if (null != value) {
             try {
-                if("java.util.AbstractMap".equals(typeName)) {
-                    return objectMapper.readValue(value,Map.class);
-                }
-                if("com.fasterxml.jackson.databind.JsonNode".equals(typeName)) {
-                    return objectMapper.readTree(value);
-                }
+                return objectMapper.readTree(value);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -127,14 +175,9 @@ public class JsonTypeHandler<T> extends BaseTypeHandler {
     @Override
     public Object getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
         String value = rs.getString(columnIndex);
-        if(null!=value){
+        if (null != value) {
             try {
-                if("java.util.AbstractMap".equals(typeName)) {
-                    return objectMapper.readValue(value,Map.class);
-                }
-                if("com.fasterxml.jackson.databind.JsonNode".equals(typeName)) {
-                    return objectMapper.readTree(value);
-                }
+                return objectMapper.readTree(value);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -145,29 +188,24 @@ public class JsonTypeHandler<T> extends BaseTypeHandler {
     @Override
     public Object getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
         String value = cs.getString(columnIndex);
-        if(null!=value){
+        if (null != value) {
             try {
-                if("java.util.AbstractMap".equals(typeName)) {
-                    return objectMapper.readValue(value,Map.class);
-                }
-                if("com.fasterxml.jackson.databind.JsonNode".equals(typeName)) {
-                    return objectMapper.readTree(value);
-                }
+                return objectMapper.readTree(value);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
         return null;
     }
-    
 }
 ```
+
 
 ## 使用List处理 String 数组
 
 - TypeHandler 中无法获取 List 泛型，所以只能强制处理 String 类型的数组
 
-- List<String> 落库格式 'A,B,C' 方便MySQL ` FIND_IN_SET() ` 函数使用
+- List<String> 落库格式 'A,B,C' 方便MySQL `FIND_IN_SET()` 函数使用
 
 - List 中 String 元素不能含有 ',' 否则会导致反序列化后元素个数与预期的不一致
 
