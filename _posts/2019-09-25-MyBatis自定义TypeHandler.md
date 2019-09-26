@@ -9,7 +9,7 @@
 
 ## 坑
 
-- 自定义的TypeHandler 必须不是接口，不是抽象类，有无参构造函数, 不能是匿名类
+- 自定义的TypeHandler 必须不是接口, 不是抽象类,有无参构造函数, 不能是匿名类
 
 ```java
 //  mybatis-spring-boot-starter 2.0.1
@@ -32,6 +32,9 @@ if (hasLength(this.typeHandlersPackage)) {
 ```
 
 - 针对某一个父类下的类型处理时，`@MappedType` 注解里只能使用类，不能使用接口，否则会导致对应的自定义TypeHandler 无法找到
+- 自定义的TypeHandler 在序列化和放序列化的时候, 用的不是同一种类型搜索方式, 所以, 既要申明父类, 也要申明相关的接口, 防止在代码中使用接口申明类型
+
+#### 入库set时使用的类型匹配方法, 按类搜索, 递归查找父类
 
 ```java
 
@@ -49,6 +52,29 @@ if (hasLength(this.typeHandlersPackage)) {
   }
 ```
 
+#### 出库get时使用的类型匹配方法, 按申明的java类型匹配, 所以用接口申明时, 会无法反序列化
+
+```java
+private <T> TypeHandler<T> getTypeHandler(Type type, JdbcType jdbcType) {
+    if (ParamMap.class.equals(type)) {
+      return null;
+    }
+    Map<JdbcType, TypeHandler<?>> jdbcHandlerMap = getJdbcHandlerMap(type);
+    TypeHandler<?> handler = null;
+    if (jdbcHandlerMap != null) {
+      handler = jdbcHandlerMap.get(jdbcType);
+      if (handler == null) {
+        handler = jdbcHandlerMap.get(null);
+      }
+      if (handler == null) {
+        // #591
+        handler = pickSoleHandler(jdbcHandlerMap);
+      }
+    }
+    // type drives generics here
+    return (TypeHandler<T>) handler;
+}
+```
 
 
 
@@ -57,7 +83,7 @@ if (hasLength(this.typeHandlersPackage)) {
 - 如果需要在业务中解析Json 某个字段的值，使用`JsonNode`更加方便
 
 ```java
-MappedTypes({AbstractMap.class, JsonNode.class})
+MappedTypes({AbstractMap.class, Map.class, JsonNode.class})
 public class JsonTypeHandler<T> extends BaseTypeHandler {
 
     private ObjectMapper objectMapper = new ObjectMapper();
@@ -148,7 +174,7 @@ public class JsonTypeHandler<T> extends BaseTypeHandler {
 ```java
 
 
-@MappedTypes({AbstractList.class})
+@MappedTypes({AbstractList.class, List.class})
 public class ListTypeHandler extends BaseTypeHandler<AbstractList<String>> {
 
     public static final String SPLITER = ",";
