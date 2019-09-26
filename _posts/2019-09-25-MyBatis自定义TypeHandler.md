@@ -160,7 +160,7 @@ public class JsonTypeHandler extends BaseTypeHandler<JsonNode> {
     }
 
     @Override
-    public Object getNullableResult(ResultSet rs, String columnName) throws SQLException {
+    public JsonNode getNullableResult(ResultSet rs, String columnName) throws SQLException {
         String value = rs.getString(columnName);
         if (null != value) {
             try {
@@ -173,7 +173,7 @@ public class JsonTypeHandler extends BaseTypeHandler<JsonNode> {
     }
 
     @Override
-    public Object getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
+    public JsonNode getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
         String value = rs.getString(columnIndex);
         if (null != value) {
             try {
@@ -186,7 +186,7 @@ public class JsonTypeHandler extends BaseTypeHandler<JsonNode> {
     }
 
     @Override
-    public Object getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
+    public JsonNode getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
         String value = cs.getString(columnIndex);
         if (null != value) {
             try {
