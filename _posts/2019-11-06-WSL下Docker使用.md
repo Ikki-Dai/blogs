@@ -59,7 +59,7 @@ cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docke
 ```
 - WSL 需要以 `管理员身份` 运行, 否者 WSL 下sudo 无法拿到最高权限
 
-2. 版本兼容问题
+2.版本兼容问题
 windows 1803 以下: `17.03.0` ~ `17.09.0`
 windows 1809 可用: `17.03.0` ~ `18.06.1`
 
@@ -69,7 +69,7 @@ windows 1809 可用: `17.03.0` ~ `18.06.1`
 # sudo apt-get install -y docker-ce=18.06.1~ce~3-0~ubuntu --allow-downgrades
 ```
 
-3. cgroup
+3.cgroup
 
 ```shell
 Error starting daemon: Devices cgroup isn't mounted
@@ -79,7 +79,7 @@ sudo cgroupfs-mount
 
 ```
 
-4. 创建网桥问题
+4.创建网桥问题
 
 ```shell
 Error starting daemon: Error initializing network controller: error obtaining controller instance: failed to create NAT chain: iptables failed: iptables -t nat -N DOCKER: iptables v1.6.0: can't initialize iptables table `nat': Table does not exist (do you need to insmod?)
@@ -107,8 +107,6 @@ function docker-exec {
     sudo nsenter -p -i -u -m -n -t `docker inspect -f {{.State.Pid}} ${name}` sh
 
 }
-
-
 ```
 
 
