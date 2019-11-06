@@ -117,6 +117,14 @@ function docker-exec {
 # docker run -dit --name nginx -p 3000:80 nginx:alpine
 ```
 
+#### 开启docker 远程访问
+
+```shell
+vim /etc/default/docker
+
+DOCKER_OPTS="-H unix:///var/run/docker.sock -H tcp://0.0.0.0:2375"
+
+```
 
 
 
