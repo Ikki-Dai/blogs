@@ -32,7 +32,7 @@ if (hasLength(this.typeHandlersPackage)) {
 ```
 
 - 针对某一个父类下的类型处理时，`@MappedType` 注解里只能使用类，不能使用接口，否则会导致对应的自定义TypeHandler 无法找到
-- 自定义的TypeHandler 在序列化和放序列化的时候, 用的不是同一种类型搜索方式, 所以, 既要申明父类, 也要申明相关的接口, 防止在代码中使用接口申明类型
+- 自定义的TypeHandler 在序列化和反序列化的时候, 用的不是同一种类型搜索方式, 所以, 既要申明父类, 也要申明相关的接口, 防止在代码中使用接口申明类型
 
 #### 入库set时使用的类型匹配方法, 按类搜索, 递归查找父类的序列化处理类
 
@@ -296,6 +296,19 @@ public class Student {
 ```properties
 mybatis.type-handlers-package=com.xxx.handler
 ```
+
+## 坑
+
+- 当属性是一个复杂类型时, `OGNL` 表达式的判断发生在 TypeHandler 转换之前. 所以如下的 `OGNL` 会发生异常
+
+```xml
+
+<if test=" courses != null and courses !='' "></if>
+
+```
+- `courses` 是一个负责类型, 在没有 转换成JSON 之前, `courses != ''`的判断会发生异常
+
+
 
 
 
