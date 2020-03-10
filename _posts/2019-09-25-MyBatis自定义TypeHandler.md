@@ -306,7 +306,7 @@ mybatis.type-handlers-package=com.xxx.handler
 <if test=" courses != null and courses !='' "></if>
 
 ```
-- `courses` 是一个负责类型, 在没有 转换成JSON 之前, `courses != ''`的判断会发生异常
+- `courses` 是一个复杂类型, 在没有 转换成JSON 之前, `courses != ''`的判断会发生异常
 
 
 
