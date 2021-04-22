@@ -1,0 +1,120 @@
+# 手把手开启网站SSL
+
+## 准备
+- acme.sh 用于申请 `Let's Encrypt` 证书
+- nginx 一个web 服务器和 公网IP
+- 一个域名
+
+## 申请域名
+
+- 可以去[freenom](https://my.freenom.com/) 申请免费域名
+- 添加解析: 去DNS 上 声明 把 域名 `xxx.domain.com` 解析到 IP 地址 : xxx.xxx.xxx.xxx
+- 等待DNS 解析生效 ，几分钟到 72 小时不等， 由于我们这里用的是免费的，所以等了 2 天
+
+国内使用 https://console.dnspod.cn/ 加速解析
+
+### 使用dnspod 解析
+
+- 注册DNSPOD 账号
+- 添加申请域名，控制台会显示 `DNS 不正确` 点击提示，会指引 修改Nameserver 设置
+
+- 设置成功后后，虽然 显示正常，但此时在浏览器里输入域名还是 会显示 :`dial tcp: lookup domain.com: no such host`
+是因为没有添加解析的IP
+
+- 添加解析记录
+
+```bash
+主机记录 | 记录类型 | 记录值                | TTL
+@       | NS      | lynx.dnspod.net.      | 86400
+@       | NS      | edwina.dnspod.net.    | 86400
+www     | A       | xxx.xxx.xxx.xxx       | 3600
+```
+- 主机记录: 为域名前缀, www, api ...
+- 记录值：要解析到的公网IP
+- TTL: 生效或刷新时间
+
+## 安装 acme.sh
+
+```bash
+sh -c "$(wget https://get.acme.sh/ -O -)"
+
+[21:31:42 ] Installing from online archive.
+[21:31:42 ] Downloading https://github.com/acmesh-official/acme.sh/archive/master.tar.gz
+[21:32:07 ] Extracting master.tar.gz
+[21:32:07 ] It is recommended to install socat first.
+[21:32:07 ] We use socat for standalone server if you use standalone mode.
+[21:32:07 ] If you don't use standalone mode, just ignore this warning.
+[21:32:07 ] Installing to /root/.acme.sh
+[21:32:07 ] Installed to /root/.acme.sh/acme.sh
+[21:32:07 ] Installing alias to '/root/.zshrc'
+[21:32:07 ] OK, Close and reopen your terminal to start using acme.sh
+[21:32:07 ] Installing alias to '/root/.cshrc'
+[21:32:07 ] Installing alias to '/root/.tcshrc'
+[21:32:07 ] Installing cron job
+[21:32:07 ] Good, bash is found, so change the shebang to use bash as preferred.
+[21:32:07 ] OK
+[21:32:07 ] Install success!
+```
+- WARN: 如果是服务器集群建议使用：socat
+- 安装了./acme.sh 目录
+- 创建了 cron job 定时检查证书是否过期
+
+- 验证安装成功
+```bash
+acme.sh --version
+
+https://github.com/acmesh-official/acme.sh
+v2.8.9
+```
+
+## 签发证书
+
+```bash
+acme.sh --issue -d www.ikkiday.ml -w /usr/share/nginx/html
+
+[ 23:12:17 ] Using CA: https://acme-v02.api.letsencrypt.org/directory
+[ 23:12:17 ] Creating domain key
+[ 23:12:17 ] The domain key is here: /root/.acme.sh/www.ikkiday.ml/www.ikkiday.ml.key
+[ 23:12:17 ] Single domain='www.ikkiday.ml'
+[ 23:12:17 ] Getting domain auth token for each domain
+[ 23:12:21 ] Getting webroot for domain='www.ikkiday.ml'
+[ 23:12:21 ] Verifying: www.ikkiday.ml
+[ 23:12:26 ] Success
+[ 23:12:26 ] Verify finished, start to sign.
+[ 23:12:26 ] Lets finalize the order.
+[ 23:12:26 ] Le_OrderFinalize='https://acme-v02.api.letsencrypt.org/acme/finalize/120150119/9206475263'
+[ 23:12:28 ] Downloading cert.
+[ 23:12:28 ] Le_LinkCert='https://acme-v02.api.letsencrypt.org/acme/cert/03456c7b01c28b0b8085294e63941069572f'
+[ 23:12:29 ] Cert success.
+-----BEGIN CERTIFICATE-----
+xxxxxxxxxxxxxxxxxxxxxx
+-----END CERTIFICATE-----
+[21 23:12:29] Your cert is in  /root/.acme.sh/www.ikkiday.ml/www.ikkiday.ml.cer
+[21 23:12:29] Your cert key is in  /root/.acme.sh/www.ikkiday.ml/www.ikkiday.ml.key
+[21 23:12:29] The intermediate CA cert is in  /root/.acme.sh/www.ikkiday.ml/ca.cer
+[21 23:12:29] And the full chain certs is there:  /root/.acme.sh/www.ikkiday.ml/fullchain.cer
+```
+-d domain 域名
+-w 网站根目录
+
+## 部署证书
+
+将证书copy 至 nginx ssl 配置相关的目录
+
+```nginx
+server {
+    listen 443 ssl;
+    server_name <你的域名>;
+    ssl_certificate     /etc/nginx/ssl/<你的域名>.cer;
+    ssl_certificate_key /etc/nginx/ssl/<你的域名>.key;
+
+    location / {
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
+    }
+
+}
+```
+
+通过域名访问一下，你的网站现在带绿色啦
+
