@@ -101,6 +101,15 @@ xxxxxxxxxxxxxxxxxxxxxx
 
 将证书copy 至 nginx ssl 配置相关的目录
 
+```bash
+ acme.sh --installcert -d ikki.wjpvip.club \
+> --key-file /etc/nginx/ssl/<你的域名>.key \
+> --cert-file /etc/nginx/ssl/<你的域名>.cer \
+> --reloadcmd "service nginx reload"
+```
+
+
+
 ```nginx
 server {
     listen 443 ssl;
@@ -117,4 +126,13 @@ server {
 ```
 
 通过域名访问一下，你的网站现在带绿色啦
+
+- 如果是需要使用证书链，需要使用fullchain.cer `--fullchainpath /etc/nginx/ssl/<你的域名>.cer`
+
+
+## 自动续期
+
+- acme 会自动续期, 依赖于上次成功执行的命令, 且会将相关路径信息记录在 <你的域名>.conf 配置文件里
+- `crontab -l` 可以查看 到 `7 0 * * * "/root/.acme.sh"/acme.sh --cron --home "/root/.acme.sh" > /dev/null` 相关的定时任务已经设置好了
+
 
